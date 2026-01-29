@@ -5,6 +5,7 @@ import excepciones.usuario.PasswordDebilException;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public abstract class Usuario {
     protected String id;
@@ -18,7 +19,7 @@ public abstract class Usuario {
 
     // CONSTRUCTOR
     public Usuario( String nombre, String email, String password, TipoSuscripcion suscripcion) {
-        this.id = id;
+        this.id = UUID.randomUUID().toString();;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
@@ -29,7 +30,7 @@ public abstract class Usuario {
         this.historial = new ArrayList<>();
 
 
-        this.fechaRegistro = Date;
+        this.fechaRegistro = new Date();
     }
 
     // GETTERS Y SETTERS
