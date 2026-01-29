@@ -1,70 +1,100 @@
 package modelo.usuarios;
 
+import enums.TipoSuscripcion;
 import excepciones.usuario.EmailInvalidoException;
 import excepciones.usuario.PasswordDebilException;
+import modelo.contenido.Contenido;
+import modelo.plataforma.Playlist;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public abstract class Usuario {
+
+    // Atributos
     protected String id;
     protected String nombre;
     protected String email;
     protected String password;
     protected TipoSuscripcion suscripcion;
-    protected ArrayList<Playlist> misPlaylists;
+
+    // Listas
+    protected ArrayList<Playlist> misPlaylist;
     protected ArrayList<Contenido> historial;
+
+    // Fecha
     protected Date fechaRegistro;
 
-    // CONSTRUCTOR
-    public Usuario( String nombre, String email, String password, TipoSuscripcion suscripcion) {
-        this.id = UUID.randomUUID().toString();;
+    // Constantes Regex
+    private static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    private static final String PASSWORD_REGEX = "^.{8,}$";
+
+    // --- CONSTRUCTOR ---
+    public Usuario(String nombre, String email, String password, TipoSuscripcion suscripcion)
+            throws EmailInvalidoException, PasswordDebilException {
+
+        this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
+
+        // 1. Asignar y VALIDAR Email inmediatamente
         this.email = email;
+        if (!validarEmail()) {
+            throw new EmailInvalidoException("El email ingresado no es válido.");
+        }
+
+        // 2. Asignar y VALIDAR Password inmediatamente
         this.password = password;
+        if (!validarPassword()) {
+            throw new PasswordDebilException("La contraseña debe tener al menos 8 caracteres.");
+        }
+
         this.suscripcion = suscripcion;
-
-
-        this.misPlaylists = new ArrayList<>();
+        this.misPlaylist = new ArrayList<>();
         this.historial = new ArrayList<>();
-
-
         this.fechaRegistro = new Date();
     }
 
-    // GETTERS Y SETTERS
+    // --- GETTERS Y SETTERS ---
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
-
-    public String getEmail() { return email; }
-
-    public void setEmail(String email) throws EmailInvalidoException {
-        if (validarEmail(email)) {
-            this.email = email;
-        } else {
-            throw new EmailInvalidoException("Error: El formato del email no es válido.");
-        }
-    }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
+    public String getEmail() { return email; }
+
+    // Setter de Email con Validación y Rollback
+    public void setEmail(String nuevoEmail) throws EmailInvalidoException {
+        String emailAnterior = this.email;
+        this.email = nuevoEmail;
+
+        if (!validarEmail()) {
+            this.email = emailAnterior; // Restaurar si falla
+            throw new EmailInvalidoException("El email no es válido.");
+        }
+    }
+
     public String getPassword() { return password; }
 
-    public void setPassword(String password) throws PasswordDebilException {
-        if (validarPassword(password)) {
-            this.password = password;
-        } else {
-            throw new PasswordDebilException("Error: El password es débil. Debe tener al menos 8 caracteres.");
+    // Setter de Password con Validación y Rollback (AÑADIDO)
+    public void setPassword(String nuevaPassword) throws PasswordDebilException {
+        String passAnterior = this.password;
+        this.password = nuevaPassword;
+
+        if (!validarPassword()) {
+            this.password = passAnterior; // Restaurar si falla
+            throw new PasswordDebilException("La contraseña es muy débil (mínimo 8 caracteres).");
         }
     }
 
     public TipoSuscripcion getSuscripcion() { return suscripcion; }
     public void setSuscripcion(TipoSuscripcion suscripcion) { this.suscripcion = suscripcion; }
 
-    public ArrayList<Playlist> getMisPlaylists() { return misPlaylists; }
-    public void setMisPlaylists(ArrayList<Playlist> misPlaylists) { this.misPlaylists = misPlaylists; }
+    public ArrayList<Playlist> getMisPlaylist() { return misPlaylist; }
+    public void setMisPlaylist(ArrayList<Playlist> misPlaylist) { this.misPlaylist = misPlaylist; }
 
     public ArrayList<Contenido> getHistorial() { return historial; }
     public void setHistorial(ArrayList<Contenido> historial) { this.historial = historial; }
@@ -72,31 +102,26 @@ public abstract class Usuario {
     public Date getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(Date fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    // METODO ABSTRACTO
+
+    // --- REGLAS DE NEGOCIO ---
+
     public abstract void reproducir(Contenido contenido);
 
-    // METODOS CONCRETOS
     public void crearPlaylist(String nombre) {
-        this.misPlaylists.add(new Playlist(nombre));
+        // Esto marcará error hasta que creemos la clase Playlist con el constructor correcto
+        this.misPlaylist.add(new Playlist(nombre, this));
     }
 
-    public void seguirPlaylist(Playlist playlist) {
-        this.misPlaylists.add(playlist);
+    // --- MÉTODOS DE VALIDACIÓN ---
+
+    public boolean validarEmail() {
+        if (this.email == null) return false;
+        return Pattern.matches(EMAIL_REGEX, this.email);
     }
 
-    public void darLike(Contenido contenido) {
-        contenido.agregarLike();
-    }
-
-    // VALIDACIONES
-    public boolean validarEmail(String email) {
-        if (email == null) return false;
-        String regex = "^[\\w.-]+@[\\w.-]+\\.[a-z]{2,4}$";
-        return email.matches(regex);
-    }
-
-    public boolean validarPassword(String password) {
-        // Corregido: Validamos el parámetro 'password', no el atributo de la clase
-        return password != null && password.length() >= 8;
+    public boolean validarPassword() {
+        if (this.password == null) return false;
+        // CORREGIDO: Ahora valida 'this.password' (antes validaba 'this.email')
+        return Pattern.matches(PASSWORD_REGEX, this.password);
     }
 }
