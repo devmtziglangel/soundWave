@@ -1,7 +1,11 @@
 package modelo.usuarios;
 
+// IMPORTS
 import enums.TipoSuscripcion;
+import excepciones.contenido.ContenidoNoDisponibleException;
+import excepciones.usuario.AnuncioRequeridoException;
 import excepciones.usuario.EmailInvalidoException;
+import excepciones.usuario.LimiteDiarioAlcanzadoException;
 import excepciones.usuario.PasswordDebilException;
 import modelo.contenido.Contenido;
 import modelo.plataforma.Playlist;
@@ -13,115 +17,215 @@ import java.util.regex.Pattern;
 
 public abstract class Usuario {
 
-    // Atributos
+    // ATRIBUTOS
     protected String id;
     protected String nombre;
     protected String email;
     protected String password;
     protected TipoSuscripcion suscripcion;
-
-    // Listas
-    protected ArrayList<Playlist> misPlaylist;
-    protected ArrayList<Contenido> historial;
-
-    // Fecha
     protected Date fechaRegistro;
 
-    // Constantes Regex
+    // Listas (Relaciones)
+    protected ArrayList<Playlist> misPlaylists;
+    protected ArrayList<Contenido> historial;
+    protected ArrayList<Playlist> playlistsSeguidas;
+    protected ArrayList<Contenido> contenidosLiked;
+
+    // Constantes internas
     private static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final String PASSWORD_REGEX = "^.{8,}$";
+    private static final int MAX_HISTORIAL = 50;
 
-    // --- CONSTRUCTOR ---
+    // CONSTRUCTOR
     public Usuario(String nombre, String email, String password, TipoSuscripcion suscripcion)
             throws EmailInvalidoException, PasswordDebilException {
 
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
 
-        // 1. Asignar y VALIDAR Email inmediatamente
-        this.email = email;
-        if (!validarEmail()) {
-            throw new EmailInvalidoException("El email ingresado no es válido.");
+        // Validacion inmediata del email
+        if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
+            throw new EmailInvalidoException("El email ingresado no tiene un formato válido.");
         }
+        this.email = email;
 
-        // 2. Asignar y VALIDAR Password inmediatamente
-        this.password = password;
-        if (!validarPassword()) {
+        // Validacion inmediata del password
+        if (password == null || !Pattern.matches(PASSWORD_REGEX, password)) {
             throw new PasswordDebilException("La contraseña debe tener al menos 8 caracteres.");
         }
+        this.password = password;
 
         this.suscripcion = suscripcion;
-        this.misPlaylist = new ArrayList<>();
-        this.historial = new ArrayList<>();
         this.fechaRegistro = new Date();
+
+        // Inicialización de listas vacías
+        this.misPlaylists = new ArrayList<>();
+        this.historial = new ArrayList<>();
+        this.playlistsSeguidas = new ArrayList<>();
+        this.contenidosLiked = new ArrayList<>();
     }
 
-    // --- GETTERS Y SETTERS ---
+    // ==========================================
+    // GETTERS Y SETTERS
+    // ==========================================
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getEmail() { return email; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    // Setter de Email con Validación y Rollback
-    public void setEmail(String nuevoEmail) throws EmailInvalidoException {
-        String emailAnterior = this.email;
-        this.email = nuevoEmail;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-        if (!validarEmail()) {
-            this.email = emailAnterior; // Restaurar si falla
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) throws EmailInvalidoException {
+        if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
             throw new EmailInvalidoException("El email no es válido.");
         }
+        this.email = email;
     }
 
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
 
-    // Setter de Password con Validación y Rollback (AÑADIDO)
-    public void setPassword(String nuevaPassword) throws PasswordDebilException {
-        String passAnterior = this.password;
-        this.password = nuevaPassword;
+    public void setPassword(String password) throws PasswordDebilException {
+        if (password == null || !Pattern.matches(PASSWORD_REGEX, password)) {
+            throw new PasswordDebilException("La contraseña es muy débil.");
+        }
+        this.password = password;
+    }
 
-        if (!validarPassword()) {
-            this.password = passAnterior; // Restaurar si falla
-            throw new PasswordDebilException("La contraseña es muy débil (mínimo 8 caracteres).");
+    public TipoSuscripcion getSuscripcion() {
+        return suscripcion;
+    }
+
+    public void setSuscripcion(TipoSuscripcion suscripcion) {
+        this.suscripcion = suscripcion;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+
+
+    // Getters  DEFENSIVOS (Requerido por README)
+
+    public ArrayList<Playlist> getMisPlaylists() {
+        return new ArrayList<>(misPlaylists);
+    }
+
+    public void setMisPlaylists(ArrayList<Playlist> misPlaylists) {
+        this.misPlaylists = misPlaylists;
+    }
+
+    public ArrayList<Contenido> getHistorial() {
+        return new ArrayList<>(historial);
+    }
+
+    public void setHistorial(ArrayList<Contenido> historial) {
+        this.historial = historial;
+    }
+
+    public ArrayList<Playlist> getPlaylistsSeguidas() {
+        return new ArrayList<>(playlistsSeguidas);
+    }
+
+    public void setPlaylistsSeguidas(ArrayList<Playlist> playlistsSeguidas) {
+        this.playlistsSeguidas = playlistsSeguidas;
+    }
+
+    public ArrayList<Contenido> getContenidosLiked() {
+        return new ArrayList<>(contenidosLiked);
+    }
+
+    public void setContenidosLiked(ArrayList<Contenido> contenidosLiked) {
+        this.contenidosLiked = contenidosLiked;
+    }
+
+    // ==========================================
+    // MÉTODOS DE NEGOCIO
+    // ==========================================
+
+    // Método abstracto (Polimorfismo)
+    public abstract void reproducir(Contenido contenido)
+            throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException;
+
+    public void crearPlaylist(String nombre) {
+
+
+        this.misPlaylists.add(new Playlist(nombre, this));
+    }
+
+    public void seguirPlaylist(Playlist playlist) {
+        if (!playlistsSeguidas.contains(playlist)) {
+            playlistsSeguidas.add(playlist);
+            // playlist.agregarSeguidor(this); // Lógica futura en Playlist
         }
     }
 
-    public TipoSuscripcion getSuscripcion() { return suscripcion; }
-    public void setSuscripcion(TipoSuscripcion suscripcion) { this.suscripcion = suscripcion; }
-
-    public ArrayList<Playlist> getMisPlaylist() { return misPlaylist; }
-    public void setMisPlaylist(ArrayList<Playlist> misPlaylist) { this.misPlaylist = misPlaylist; }
-
-    public ArrayList<Contenido> getHistorial() { return historial; }
-    public void setHistorial(ArrayList<Contenido> historial) { this.historial = historial; }
-
-    public Date getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(Date fechaRegistro) { this.fechaRegistro = fechaRegistro; }
-
-
-    // --- REGLAS DE NEGOCIO ---
-
-    public abstract void reproducir(Contenido contenido);
-
-    public void crearPlaylist(String nombre) {
-        // Esto marcará error hasta que creemos la clase Playlist con el constructor correcto
-        this.misPlaylist.add(new Playlist(nombre, this));
+    public void dejarDeSeguirPlaylist(Playlist playlist) {
+        if (playlistsSeguidas.contains(playlist)) {
+            playlistsSeguidas.remove(playlist);
+            // playlist.eliminarSeguidor(this); // Lógica futura en Playlist
+        }
     }
 
-    // --- MÉTODOS DE VALIDACIÓN ---
+    public void darLike(Contenido contenido) {
+        if (!contenidosLiked.contains(contenido)) {
+            contenidosLiked.add(contenido);
+            contenido.agregarLike();
+        }
+    }
 
+    public void quitarLike(Contenido contenido) {
+        if (contenidosLiked.contains(contenido)) {
+            contenidosLiked.remove(contenido);
+
+        }
+    }
+
+    public void agregarAlHistorial(Contenido contenido) {
+
+        historial.remove(contenido);
+        historial.add(0, contenido);
+
+        // Limitar tamaño del historial
+        if (historial.size() > MAX_HISTORIAL) {
+            historial.remove(historial.size() - 1);
+        }
+    }
+
+    public void limpiarHistorial() {
+        historial.clear();
+    }
+
+    public boolean esPremium() {
+        return this.suscripcion != TipoSuscripcion.GRATUITO;
+    }
+
+    // Métodos de utilidad para validaciones internas
     public boolean validarEmail() {
-        if (this.email == null) return false;
-        return Pattern.matches(EMAIL_REGEX, this.email);
+        return email != null && Pattern.matches(EMAIL_REGEX, email);
     }
 
     public boolean validarPassword() {
-        if (this.password == null) return false;
-        // CORREGIDO: Ahora valida 'this.password' (antes validaba 'this.email')
-        return Pattern.matches(PASSWORD_REGEX, this.password);
+        return password != null && Pattern.matches(PASSWORD_REGEX, password);
     }
 }
