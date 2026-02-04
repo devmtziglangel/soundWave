@@ -160,17 +160,4 @@ public abstract  class Contenido   implements Descargable, Reproducible {
         return  this.id.equals(otro.id);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

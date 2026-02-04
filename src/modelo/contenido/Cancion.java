@@ -186,9 +186,8 @@ public class Cancion  extends Contenido {
 
     @Override
     public int espacioRequerido() {
-        return get;
+        return (duracionSegundos/60) +1;
     }
-
 
 
     //OVERRIDE DE IREPRODUCIBLE
