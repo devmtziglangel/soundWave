@@ -6,7 +6,7 @@ import excepciones.contenido.ContenidoNoDisponibleException;
 import excepciones.contenido.DuracionInvalidaException;
 import excepciones.contenido.LetraNoDisponibleException;
 import excepciones.descarga.ContenidoYaDescargadoException;
-import excepciones.descarga.LimiteDescargasException;
+
 import modelo.artistas.Album;
 import modelo.artistas.Artista;
 
@@ -22,6 +22,7 @@ public class Cancion  extends Contenido {
     private String audioURL;
     private boolean explicit;
     private String ISRC;
+
     private boolean reproduciendo;
     private boolean pausado;
     private boolean descargado;
@@ -74,6 +75,14 @@ public class Cancion  extends Contenido {
         this.artista = artista;
     }
 
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
     public GeneroMusical getGenero() {
         return genero;
     }
@@ -123,20 +132,16 @@ public class Cancion  extends Contenido {
     //METODOS PROPIOS
 
     public String obtenerLetra() throws LetraNoDisponibleException {
-        if(letra == null || letra.isEmpty()) throw new LetraNoDisponibleException("La letra de la cancion no esta disponible");
-
+        if (letra == null || letra.isEmpty()) {
+            throw new LetraNoDisponibleException("La letra de la canción no está disponible");
+        }
         return this.letra;
     }
 
-    public boolean esExplicit(){
-        return this.explicit;
-    }
 
-    public void CambiarGenero(GeneroMusical nuevoGenero){
+    public void cambiarGenero(GeneroMusical nuevoGenero) {
         this.genero = nuevoGenero;
-
     }
-
 
 
     public void validarAudioURL() throws ArchivoAudioNoEncontradoException {
@@ -164,12 +169,15 @@ public class Cancion  extends Contenido {
 
     //OVERRIDE DE  IDESCARGABLE
     @Override
-    public boolean descargar() throws LimiteDescargasException, ContenidoYaDescargadoException {
-        if (this.descargado == true){
-            throw  new ContenidoYaDescargadoException("La cancion ya esta descargada");
+    public boolean descargar() throws ContenidoYaDescargadoException {
+        // Aqui SOLO verificamos si ya se bajó.
+        // El límite (50 vs 100) lo verificará la clase Usuario
+        if (this.descargado) {
+            throw new ContenidoYaDescargadoException("La canción " + getTitulo() + " ya está descargada");
         }
+
         this.descargado = true;
-        System.out.println("Descargando cancion...." +getTitulo());
+        System.out.println("Descargando canción: " + getTitulo());
         return true;
     }
 
@@ -186,6 +194,7 @@ public class Cancion  extends Contenido {
 
     @Override
     public int espacioRequerido() {
+
         return (duracionSegundos/60) +1;
     }
 
@@ -196,7 +205,7 @@ public class Cancion  extends Contenido {
         this.reproduciendo= true;
         this.pausado = false;
 
-        System.out.println("Reproduciendo cancion  " + getTitulo() + " de "+ this.artista.toString());
+        System.out.println("Reproduciendo   " + getTitulo() + " de "+ this.artista.toString());
     }
 
     @Override
@@ -204,7 +213,7 @@ public class Cancion  extends Contenido {
         this.reproduciendo= false;
         this.pausado = true;
 
-        System.out.println("Pausada cancion de " + getTitulo());
+        System.out.println("Pausada: " + getTitulo());
     }
 
     @Override
