@@ -6,7 +6,6 @@ import excepciones.contenido.DuracionInvalidaException;
 import excepciones.contenido.EpisodioNoEncontradoException;
 import excepciones.contenido.TranscripcionNoDisponibleException;
 import excepciones.descarga.ContenidoYaDescargadoException;
-import excepciones.descarga.LimiteDescargasException;
 import modelo.artistas.Creador;
 
 import java.util.ArrayList;
@@ -182,8 +181,6 @@ public class Podcast  extends  Contenido{
     public void validarEpisodio() throws EpisodioNoEncontradoException{
         if(temporada<=0 || numeroEpisodio<=0) throw new EpisodioNoEncontradoException("No existe el episodio");
     }
-
-
 
 
     //METODO de --> CONTENIDO

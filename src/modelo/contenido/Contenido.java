@@ -133,8 +133,6 @@ public abstract  class Contenido   implements Descargable, Reproducible {
         return String.format("%d:%02d", min, seg);
     }
 
-
-
     //OVERRIDES
 
     @Override
@@ -160,4 +158,7 @@ public abstract  class Contenido   implements Descargable, Reproducible {
         return  this.id.equals(otro.id);
     }
 
+
+
 }
+
