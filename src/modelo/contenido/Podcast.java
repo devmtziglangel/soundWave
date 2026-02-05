@@ -40,7 +40,7 @@ public class Podcast  extends  Contenido{
         //Asignacion inicilizar
         this.descripcion = "";
         this.invitados = new ArrayList<>();
-        this.transcripcion = "";
+        this.transcripcion = null;
 
         //Asignacion estados --> Contenido
 
@@ -207,7 +207,11 @@ public class Podcast  extends  Contenido{
 
     @Override
     public boolean eliminarDescarga() {
-        return false;
+        if(this.descargado){
+            this.descargado=false;
+            System.out.println("Eliminando descarga"+getTitulo()+  "del dispositivo");
+        }
+        return true;
     }
 
     @Override
