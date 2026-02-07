@@ -3,7 +3,7 @@ package modelo.artistas;
 import enums.CategoriaPodcast;
 import excepciones.artista.LimiteEpisodiosException;
 import excepciones.contenido.EpisodioNoEncontradoException;
-import excepciones.descarga.LimiteDescargasException;
+
 import modelo.contenido.Podcast;
 import utilidades.EstadisticasCreador;
 
