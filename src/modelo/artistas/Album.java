@@ -1,6 +1,9 @@
 package modelo.artistas;
 
 import com.sun.java.accessibility.util.GUIInitializedListener;
+import enums.GeneroMusical;
+import excepciones.artistas.AlbumCompletoException;
+import excepciones.contenido.DuracionInvalidaException;
 import excepciones.playlist.CancionNoEncontradaException;
 import modelo.contenido.Cancion;
 
@@ -126,6 +129,50 @@ public class Album {
     }
 
     //METODOS COMPOSICION AGREGACION
+
+    public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero)
+            throws AlbumCompletoException, DuracionInvalidaException { //EL THROW SE HACE EN LA CLASE CANCION
+
+        // 1. Verificamos si hay espacio
+        if (canciones.size() >= MAX_CANCIONES) {
+            throw new AlbumCompletoException("El álbum está completo. No caben más canciones.");
+        }
+
+        // 2. Instanciamos la canción (COMPOSICIÓN)
+        // Pasamos 'this.artista' porque la canción pertenece al artista de este álbum.
+        // OJO AL ORDEN: Título -> Duración -> Artista -> Género
+        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero);
+
+        // 3. Establecemos la relación inversa (La canción debe saber que este es su álbum)
+        nuevaCancion.setAlbum(this); // --> "YO SOY TU PADRE"
+
+        // 4. La guardamos en la lista del álbum
+        canciones.add(nuevaCancion);
+
+        // 5. Devolvemos la canción creada
+        return nuevaCancion;
+    }
+
+    public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero, String letra, boolean explicit)
+            throws AlbumCompletoException, DuracionInvalidaException {
+
+        // 1. Validar si cabe (Igual que el anterior)
+        if (canciones.size() >= MAX_CANCIONES) {
+            throw new AlbumCompletoException("El álbum está completo.");
+        }
+
+        // 2. Instanciar (COMPOSICIÓN) usando el constructor COMPLETO
+        // Fíjate: pasamos 'this.artista' (el padre) + letra + explicit
+        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero, letra, explicit);
+
+        // 3. Vincular (Igual que el anterior: "Yo soy tu álbum")
+        nuevaCancion.setAlbum(this);
+
+        // 4. Guardar y devolver
+        canciones.add(nuevaCancion);
+        return nuevaCancion;
+    }
+
 
 
 
