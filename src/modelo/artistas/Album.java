@@ -1,8 +1,8 @@
 package modelo.artistas;
 
-import com.sun.java.accessibility.util.GUIInitializedListener;
+
 import enums.GeneroMusical;
-import excepciones.artistas.AlbumCompletoException;
+import excepciones.artista.AlbumCompletoException;
 import excepciones.contenido.DuracionInvalidaException;
 import excepciones.playlist.CancionNoEncontradaException;
 import modelo.contenido.Cancion;
@@ -23,6 +23,7 @@ public class Album {
 
     //CONSTRUCTOR A
     public Album(String titulo, Artista artista, Date fechalanzamiento) {
+
         //GENERAR ID
         this.id = UUID.randomUUID().toString();
 
@@ -37,12 +38,7 @@ public class Album {
         this.portadaURL = null;
         this.discografica = null;
         this.tipoAlbum = null;
-
-
-
     }
-
-
 
     //CONSTRUCTOR B
 
@@ -181,7 +177,7 @@ public class Album {
 
     public void eliminarCancion(int posicion) throws CancionNoEncontradaException{
 
-        if(posicion<0 || posicion>canciones.size()){
+        if(posicion<=0 || posicion>canciones.size()){
             throw  new CancionNoEncontradaException("Cancion no encontrada");
         }
         canciones.remove(posicion-1);
@@ -221,7 +217,7 @@ public class Album {
         return canciones.size();
     }
 
-    public void ordenarPopularidad(){
+    public void ordenarPorPopularidad(){
 
 
         Collections.sort(canciones, (c1, c2) -> c2.getReproducciones() - c1.getReproducciones());
@@ -229,7 +225,7 @@ public class Album {
     }
 
     public Cancion getCancion(int posicion) throws CancionNoEncontradaException{
-        if(posicion<0 || posicion>canciones.size()){
+        if(posicion<=0 || posicion>canciones.size()){
             throw  new CancionNoEncontradaException("Cancion no encontrada");
         }
         return canciones.get(posicion-1);

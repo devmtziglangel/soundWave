@@ -1,7 +1,7 @@
 package modelo.artistas;
 
-import excepciones.artistas.AlbumYaExisteException; // OJO: El paquete suele ser singular 'excepciones.artista'
-import excepciones.artistas.ArtistaNoVerificadoException;
+import excepciones.artista.AlbumYaExisteException; // OJO: El paquete suele ser singular 'excepciones.artista'
+import excepciones.artista.ArtistaNoVerificadoException;
 import modelo.contenido.Cancion;
 // import modelo.contenido.Contenido; // No se usa directamente, se puede quitar
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class Artista {
     }
 
     public ArrayList<Cancion> obtenerTopCanciones(int cantidad) {
-        ArrayList<Cancion> ordenadas = new ArrayList<>(discografia);
+        ArrayList<Cancion> ordenadas = new ArrayList<>(this.discografia);
 
         // Ordenar de mayor a menor reproducciones
         ordenadas.sort((c1, c2) -> c2.getReproducciones() - c1.getReproducciones());

@@ -1,4 +1,4 @@
-package excepciones.artistas;
+package excepciones.artista;
 
 public class AlbumCompletoException extends RuntimeException {
     public AlbumCompletoException(String message) {

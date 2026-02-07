@@ -1,4 +1,4 @@
-package excepciones.artistas;
+package excepciones.artista;
 
 public class ArtistaNoVerificadoException extends RuntimeException {
     public ArtistaNoVerificadoException(String message) {
