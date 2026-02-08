@@ -226,20 +226,20 @@ public abstract class Usuario {
 
     @Override
     public boolean equals(Object obj) {
-        // 1. Si es la misma referencia en memoria, son iguales
+
         if (this == obj) return true;
 
-        // 2. Si es nulo o no es de la misma clase (o subclase), no son iguales
+
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        // 3. Convertimos (casting) y comparamos IDs
+
         Usuario otroUsuario = (Usuario) obj;
         return this.id.equals(otroUsuario.id);
     }
 
     @Override
     public int hashCode() {
-        // Generamos el hash basado únicamente en el ID para ser consistentes con equals
+
         return this.id.hashCode();
     }
 
