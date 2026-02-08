@@ -11,8 +11,18 @@ import modelo.plataforma.Anuncio;
 
 import java.util.Date;
 
-public class UsuarioGratuito  {
+public class UsuarioGratuito  extends Usuario {
 
 
 
+
+
+    public UsuarioGratuito(String nombre, String email, String password, TipoSuscripcion suscripcion) throws EmailInvalidoException, PasswordDebilException {
+        super(nombre, email, password, suscripcion);
+    }
+
+    @Override
+    public void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException {
+
+    }
 }

@@ -1,4 +1,9 @@
 package modelo.usuarios;
 
-public class UsuarioPremium {
+
+
+public class UsuarioPremium  {
+
+
+
 }
