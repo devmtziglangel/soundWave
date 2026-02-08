@@ -3,6 +3,8 @@ package modelo.usuarios;
 
 import enums.TipoSuscripcion;
 import excepciones.contenido.ContenidoNoDisponibleException;
+import excepciones.descarga.ContenidoYaDescargadoException;
+import excepciones.descarga.LimiteDescargasException;
 import excepciones.usuario.AnuncioRequeridoException;
 import excepciones.usuario.EmailInvalidoException;
 import excepciones.usuario.LimiteDiarioAlcanzadoException;
@@ -42,9 +44,52 @@ public class UsuarioPremium  extends Usuario {
         this(nombre, email, password, TipoSuscripcion.PREMIUM);
     }
 
+    //GET Y SETTERS
 
 
-        @Override
+    public String getCalidadAudio() {
+        return calidadAudio;
+    }
+
+    public void setCalidadAudio(String calidadAudio) {
+        this.calidadAudio = calidadAudio;
+    }
+
+    public int getMaxDescargas() {
+        return maxDescargas;
+    }
+
+    public void setMaxDescargas(int maxDescargas) {
+        this.maxDescargas = maxDescargas;
+    }
+
+    public ArrayList<Contenido> getDescargados() {
+        return descargados;
+    }
+
+    public void setDescargados(ArrayList<Contenido> descargados) {
+        this.descargados = descargados;
+    }
+
+    public boolean isDescargasOffline() {
+        return descargasOffline;
+    }
+
+    public void setDescargasOffline(boolean descargasOffline) {
+        this.descargasOffline = descargasOffline;
+    }
+    //METODOS PROPIOS
+    public void descargar(Contenido contenido) throws LimiteDescargasException, ContenidoYaDescargadoException{
+        if(descargados.contains(contenido)) throw new ContenidoYaDescargadoException("Contenido descargado");
+        if(descargados.size()>=MAX_DESCARGAS_DEFAULT) throw new LimiteDescargasException("alcanzdo el limite");
+
+        descargados.add(contenido);
+    }
+
+
+
+    //METODO DEL PADRE
+    @Override
     public void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException {
 
     }
