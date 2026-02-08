@@ -86,6 +86,10 @@ public class UsuarioPremium  extends Usuario {
         descargados.add(contenido);
     }
 
+    public boolean eliminarDescarga (Contenido contenido){
+        return descargados.remove(contenido);
+    }
+
 
 
     //METODO DEL PADRE
