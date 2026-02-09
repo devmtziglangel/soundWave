@@ -83,6 +83,8 @@ public class UsuarioPremium  extends Usuario {
         if(descargados.contains(contenido)) throw new ContenidoYaDescargadoException("Contenido descargado");
         if(descargados.size()>=MAX_DESCARGAS_DEFAULT) throw new LimiteDescargasException("alcanzdo el limite");
 
+        contenido.descargar();
+
         descargados.add(contenido);
     }
 
@@ -90,11 +92,51 @@ public class UsuarioPremium  extends Usuario {
         return descargados.remove(contenido);
     }
 
+    public boolean verificarEspacioDescarga(){
+        return  descargados.size() < MAX_DESCARGAS_DEFAULT;
+
+    }
+    public int getDescargasRestantes (){
+        return MAX_DESCARGAS_DEFAULT - descargados.size();
+    }
+
+    public void cambiarCalidadAudio (String calidad){
+        if(calidad != null && (calidad.equalsIgnoreCase("Alta") || calidad.equalsIgnoreCase("Normal") || calidad.equalsIgnoreCase("Baja"))){
+            this.calidadAudio = calidad;
+        }
+    }
+
+    public void limpiarDescargas(){
+        if(!descargados.isEmpty()){
+            descargados.clear();
+        }
+    }
+
+
+    public int getNumDescargados() {
+        return descargados.size();
+    }
 
 
     //METODO DEL PADRE
     @Override
     public void reproducir(Contenido contenido) throws ContenidoNoDisponibleException, LimiteDiarioAlcanzadoException, AnuncioRequeridoException {
 
+        contenido.reproducir();
+
+        agregarHistorial(contenido);
+
+
     }
+
+    //METODO OVERRIDE
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                " | Calidad: " + this.calidadAudio;
+    }
+
+
+
 }

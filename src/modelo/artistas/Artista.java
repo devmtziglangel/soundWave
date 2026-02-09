@@ -6,7 +6,7 @@ import modelo.contenido.Cancion;
 // import modelo.contenido.Contenido; // No se usa directamente, se puede quitar
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID; // CORRECCIÓN: Necesario para generar el ID
+import java.util.UUID; // Necesario para generar el ID
 
 public class Artista {
     // ATRIBUTOS
@@ -93,7 +93,7 @@ public class Artista {
             }
         }
 
-        // Tienes que pasarte a ti mismo ('this') para que el álbum sepa de quién es.
+        // Tienes que pasarte a ti mismo ('this') para que el album sepa de quién es.
         Album nuevo = new Album(titulo, this, fecha);
 
         this.albumes.add(nuevo);
