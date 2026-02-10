@@ -4,11 +4,11 @@ import excepciones.contenido.ContenidoNoDisponibleException;
 import excepciones.contenido.DuracionInvalidaException;
 import interfaces.Descargable;
 import interfaces.Reproducible;
-import modelo.plataforma.Playlist;
+
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
+
 import java.util.UUID;
 
 public abstract  class Contenido   implements Descargable, Reproducible {
