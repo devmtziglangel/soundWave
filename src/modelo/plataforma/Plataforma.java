@@ -480,6 +480,30 @@ public class Plataforma {
     // ==================== ESTADÍSTICAS ====================
 
     /**
+     * Identifica al artista con mayor número de reproducciones totales.
+     * Requerido por el Test 10.8
+     */
+    public Artista getArtistaMasReproducido() {
+        if (artistas == null || artistas.isEmpty()) {
+            return null;
+        }
+
+        Artista artistaMasPopular = null;
+        int maxReproducciones = -1; // Iniciamos en -1 para manejar casos con 0 reproducciones
+
+        for (Artista a : artistas.values()) {
+            // Usamos el método getTotalReproducciones() que ya existe en la clase Artista
+            int total = a.getTotalReproducciones();
+
+            if (total > maxReproducciones) {
+                maxReproducciones = total;
+                artistaMasPopular = a;
+            }
+        }
+        return artistaMasPopular;
+    }
+
+    /**
      * Obtiene estadísticas generales de la plataforma.
      */
     public String obtenerEstadisticasGenerales() {
@@ -578,6 +602,8 @@ public class Plataforma {
 
         return sb.toString();
     }
+
+
 
     // ==================== GETTERS BÁSICOS ====================
 

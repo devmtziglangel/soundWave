@@ -136,11 +136,26 @@ public class Artista {
     }
 
     public int getTotalReproducciones() {
-        int totalRepro = 0;
-        for (Cancion c : discografia) {
-            totalRepro += c.getReproducciones();
+        int total = 0;
+
+        // 1. Sumar las reproducciones de todos los álbumes
+        if (this.albumes != null) {
+            for (Album album : this.albumes) {
+                total += album.getTotalReproducciones(); // Llama al método del álbum
+            }
         }
-        return totalRepro;
+
+        // 2. Opcional: Si tu artista también tiene una lista de canciones "Sueltas" (Singles)
+        // sin álbum, tendrías que sumarlas también aquí. Ejemplo:
+        /*
+        if (this.singles != null) {
+            for (Cancion single : this.singles) {
+                total += single.getReproducciones();
+            }
+        }
+        */
+
+        return total;
     }
 
     public void incrementarOyentes() {
