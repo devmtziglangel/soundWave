@@ -15,14 +15,14 @@ import java.util.UUID;
 public class Creador {
     private String id;
     private String nombreCanal;
-    private  String nombre;
+    private String nombre;
     private ArrayList<Podcast> episodios;
     private int suscriptores;
     private String descripcion;
-    private HashMap<String, String>redesSociales;
+    private HashMap<String, String> redesSociales;
     private ArrayList<CategoriaPodcast> categoriasPrincipales;
 
-    private  static final int MAX_EPISODIOS=500;
+    private static final int MAX_EPISODIOS = 500;
 
 
     //CONSTURCTOR A
@@ -37,17 +37,27 @@ public class Creador {
         //ATRIBUTOS
         this.episodios = new ArrayList<>();
         this.suscriptores = 0;
-        this.descripcion=null;
+        this.descripcion = null;
         this.redesSociales = new HashMap<>();
         this.categoriasPrincipales = new ArrayList<>();
 
     }
+
     //CONSTRUCTOR B
     public Creador(String nombreCanal, String nombre, String descripcion) {
         this(nombreCanal, nombre);
         this.descripcion = descripcion;
 
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public String getNombreCanal() {
         return nombreCanal;
@@ -105,49 +115,55 @@ public class Creador {
         this.categoriasPrincipales = categoriasPrincipales;
     }
 
+    public int getNumEpisodios() {
+        return (episodios != null) ? episodios.size() : 0;
+    }
+
     //MEOTODOS
 
     public void publicarPodcast(Podcast episodio) throws LimiteEpisodiosException {
-        if(episodios.size() == MAX_EPISODIOS) throw  new LimiteEpisodiosException("No entran mas episodios");
+        if (episodios.size() == MAX_EPISODIOS) throw new LimiteEpisodiosException("No entran mas episodios");
 
         episodios.add(episodio);
 
     }
-    public EstadisticasCreador obtenerEstadisticas(){
+
+    public EstadisticasCreador obtenerEstadisticas() {
 
 
         return new EstadisticasCreador(this);
     }
 
-    public void agregarRedSocial(String red, String usuario){
-        if(redesSociales.containsKey(red) && redesSociales.containsValue(usuario)){
-             throw new IllegalArgumentException("Ya existen");
+    public void agregarRedSocial(String red, String usuario) {
+        if (redesSociales.containsKey(red) && redesSociales.containsValue(usuario)) {
+            throw new IllegalArgumentException("Ya existen");
         }
         redesSociales.put(red, usuario);
 
     }
 
-    public double calcularPromedioReproducciones(){
+    public double calcularPromedioReproducciones() {
         double total = 0;
 
-        for(Podcast p: episodios){
+        for (Podcast p : episodios) {
             total += p.getReproducciones();
         }
 
-        if(episodios.isEmpty()){
+        if (episodios.isEmpty()) {
             System.out.println("No hay episodios");
 
             return 0;
         }
 
-        return total/episodios.size();
+        return total / episodios.size();
 
     }
-    public void eliminarEpisodio(String idEpisodio) throws EpisodioNoEncontradoException{
-        //Buscamos cada uno de los episodios del podcast por su ID
-        for(Podcast p : episodios){
 
-            if(p.getId().equals(idEpisodio)){ //comparamos con equals porque son objetos diferentes con la misma información
+    public void eliminarEpisodio(String idEpisodio) throws EpisodioNoEncontradoException {
+        //Buscamos cada uno de los episodios del podcast por su ID
+        for (Podcast p : episodios) {
+
+            if (p.getId().equals(idEpisodio)) { //comparamos con equals porque son objetos diferentes con la misma información
                 episodios.remove(p); //removemos el objeto episodio
                 return;
 
@@ -156,22 +172,21 @@ public class Creador {
         throw new EpisodioNoEncontradoException("No se encontro el episodio");
 
 
-
     }
 
-    public int getTotalReproducciones(){
+    public int getTotalReproducciones() {
         int total = 0;
-        for(Podcast c : episodios){
-            total+= c.getReproducciones();
+        for (Podcast c : episodios) {
+            total += c.getReproducciones();
         }
         return total;
     }
 
-    public void incrementarSuscriptores(){
+    public void incrementarSuscriptores() {
         this.suscriptores++;
     }
 
-    public ArrayList<Podcast> obtenerTopEpisodios(int cantidad){
+    public ArrayList<Podcast> obtenerTopEpisodios(int cantidad) {
 
         //Crear copia (ArrayList) a partir de los episoddios, esa copia se llama "ordenadas" (la que manipulemos asi la orginal queda intacta)
         ArrayList<Podcast> ordenadas = new ArrayList<>(this.episodios);
@@ -180,25 +195,24 @@ public class Creador {
         ordenadas.sort((c1, c2) -> c2.getReproducciones() - c1.getReproducciones());
 
         //Ahora crear el Array "top" vacio para ir poblandolo
-        ArrayList<Podcast>top = new ArrayList<>();
+        ArrayList<Podcast> top = new ArrayList<>();
         int limite = Math.min(cantidad, ordenadas.size());
 
-        for(int i = 0; i<limite;i++){
+        for (int i = 0; i < limite; i++) {
             top.add(ordenadas.get(i));
         }
 
         return top;
 
 
-
     }
 
-    public int getUltimaTemporada(){
+    public int getUltimaTemporada() {
         int maxTemp = 0;
 
-        for(Podcast p : episodios){
-            if(p.getTemporada() > maxTemp){
-                maxTemp=p.getTemporada();
+        for (Podcast p : episodios) {
+            if (p.getTemporada() > maxTemp) {
+                maxTemp = p.getTemporada();
 
             }
         }
@@ -208,16 +222,16 @@ public class Creador {
 
     //METODOS OVERRIDES
     @Override
-    public String toString(){
-        return  "Creador " + nombre + ", suscriptores :  " + suscriptores+ " , episodios totales: " + episodios;
+    public String toString() {
+        return "Creador " + nombre + ", suscriptores :  " + suscriptores + " , episodios totales: " + episodios;
     }
 
     @Override
-    public boolean equals (Object obj){
+    public boolean equals(Object obj) {
         //Si son el mismo objeto en memoria
-        if(this == obj) return true;
+        if (this == obj) return true;
         // Se compara con NADA, por tanto, como existe es F // NO Somos la misma especie =  F
-        if(obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
         //Casteamos "obj" como X, lo guardamos en un variable de tipo X llamado "otro
         //Despues compramos el this(YO MISMO).id con el objeto que viene de fuera ("otro") para ver si son iguales
@@ -227,10 +241,10 @@ public class Creador {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return Objects.hash(nombre, suscriptores);
     }
 
-
-
 }
+
+

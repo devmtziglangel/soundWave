@@ -119,7 +119,7 @@ public class Escenario4GestionPlaylistsTest {
     @Order(5)
     @DisplayName("4.5 - Ordenar playlist por popularidad")
     void testOrdenarPorPopularidad() throws PlaylistVaciaException {
-        playlistPrivada.ordenarPor(CriterioOrden.);
+        playlistPrivada.ordenarPor(CriterioOrden.POPULARIDAD);
 
         // La canción con más reproducciones debería estar primero
         int reprosAnterior = playlistPrivada.getContenido(0).getReproducciones();

@@ -93,12 +93,16 @@ public class Album {
         this.fechalanzamiento = fechalanzamiento;
     }
 
-    // ¡Perfecta copia defensiva!
+    // ¡ copia defensiva!
     public ArrayList<Cancion> getCanciones() {
         return new ArrayList<>(canciones);
     }
 
     //  NO PONGO  setCanciones PARA RESPETAR LA COMPOSICIÓN Y EL LÍMITE DE 20
+
+    public int getMaxCanciones() {
+        return MAX_CANCIONES;
+    }
 
     public String getPortadaURL() {
         return portadaURL;
@@ -265,4 +269,6 @@ public class Album {
     public int hashCode() {
         return this.id.hashCode();
     }
+
+
 }

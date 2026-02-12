@@ -196,7 +196,7 @@ public abstract class Usuario {
         }
     }
 
-    public void agregarHistorial (Contenido contenido){
+    public void agregarAlHistorial (Contenido contenido){
        if(historial.size()>=LIMITE_HISTORIAL){
            historial.removeFirst();
        }

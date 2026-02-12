@@ -174,7 +174,7 @@ public class UsuarioGratuito  extends Usuario  {
        }
 
        contenido.reproducir();
-       agregarHistorial(contenido);
+       agregarAlHistorial(contenido);
 
        //Actualizar contador de reporducion para que salte cada 3
 

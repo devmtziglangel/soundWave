@@ -126,7 +126,7 @@ public class UsuarioPremium  extends Usuario {
 
         contenido.reproducir();
 
-        agregarHistorial(contenido);
+        agregarAlHistorial(contenido);
 
     }
 
