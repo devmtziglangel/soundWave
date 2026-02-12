@@ -1,8 +1,8 @@
 package enums;
 
 public enum AlgoritmoRecomendacion {
-    COLABORATIVO("Basado en usuarios similares"),
-    CONTENIDO("Basado en características del contenido"),
+    FILTRADO_COLABORATIVO("Basado en usuarios similares"), // Antes COLABORATIVO
+    BASADO_EN_CONTENIDO("Basado en características del contenido"), // Antes CONTENIDO
     HIBRIDO("Combinación de ambos");
 
     private final String descripcion;
@@ -15,11 +15,8 @@ public enum AlgoritmoRecomendacion {
         return descripcion;
     }
 
-    //OVERRIDE
-
     @Override
     public String toString(){
-        return name() + "(" +  descripcion +")";
-
+        return name() + " (" +  descripcion +")";
     }
 }
