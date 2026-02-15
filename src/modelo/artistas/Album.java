@@ -51,7 +51,7 @@ public class Album {
         this.tipoAlbum = tipoAlbum;
 
         //ATRIBUTO
-        // this.portadaURL=null;  ¡No hace falta poner portadaURL = null otra vez, el A ya lo hizo!
+        // this.portadaURL=null;  No hace falta poner portadaURL = null otra vez, el A ya lo hizo
 
 
     }
@@ -93,7 +93,7 @@ public class Album {
         this.fechalanzamiento = fechalanzamiento;
     }
 
-    // ¡ copia defensiva!
+    //  copia defensiva
     public ArrayList<Cancion> getCanciones() {
         return new ArrayList<>(canciones);
     }
@@ -140,13 +140,13 @@ public class Album {
 
         // 2. Instanciamos la canción (COMPOSICIÓN)
         // Pasamos 'this.artista' porque la canción pertenece al artista de este álbum.
-        // OJO AL ORDEN: Título -> Duración -> Artista -> Género
+        // OJO AL ORDEN: Título -> Duracion -> Artista -> Genero
         Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero);
 
         // 3. Establecemos la relación inversa (La canción debe saber que este es su álbum)
-        nuevaCancion.setAlbum(this); // --> "YO SOY TU PADRE"
+        nuevaCancion.setAlbum(this); // --> YO SOY TU PADRE
 
-        // 4. La guardamos en la lista del álbum
+        // 4. La guardamos en la lista del album
         canciones.add(nuevaCancion);
 
         // 5. Devolvemos la canción creada
@@ -161,8 +161,8 @@ public class Album {
             throw new AlbumCompletoException("El álbum está completo.");
         }
 
-        // 2. Instanciar (COMPOSICIÓN) usando el constructor COMPLETO
-        // Fíjate: pasamos 'this.artista' (el padre) + letra + explicit
+        // 2. Instanciar (COMPOSICIoN) usando el constructor COMPLETO
+        // OJO: pasamos 'this.artista' (el padre) + letra + explicit
         Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero, letra, explicit);
 
         // 3. Vincular (Igual que el anterior: "Yo soy tu álbum")

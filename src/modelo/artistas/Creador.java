@@ -94,7 +94,7 @@ public class Creador {
         return redesSociales.get("twitter");
     }
 
-    // --- MÉTODOS DE NEGOCIO RESTANTES ---
+    //
 
     public void publicarPodcast(Podcast episodio) throws LimiteEpisodiosException {
         if (episodios.size() >= MAX_EPISODIOS) throw new LimiteEpisodiosException("No entran mas episodios");
