@@ -6,11 +6,13 @@ import excepciones.contenido.DuracionInvalidaException;
 import excepciones.contenido.EpisodioNoEncontradoException;
 import excepciones.contenido.TranscripcionNoDisponibleException;
 import excepciones.descarga.ContenidoYaDescargadoException;
+import interfaces.Descargable;
+import interfaces.Reproducible;
 import modelo.artistas.Creador;
 
 import java.util.ArrayList;
 
-public class Podcast  extends  Contenido{
+public class Podcast  extends  Contenido  implements Descargable, Reproducible {
 
     private Creador creador;
     private  int numeroEpisodio;

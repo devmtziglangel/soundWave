@@ -7,13 +7,15 @@ import excepciones.contenido.DuracionInvalidaException;
 import excepciones.contenido.LetraNoDisponibleException;
 import excepciones.descarga.ContenidoYaDescargadoException;
 
+import interfaces.Descargable;
+import interfaces.Reproducible;
 import modelo.artistas.Album;
 import modelo.artistas.Artista;
 
 import java.util.UUID;
 
 
-public class Cancion  extends Contenido {
+public class Cancion  extends Contenido   implements Descargable, Reproducible {
     //ATRIBUTOS
     private String letra;
     private Artista artista;

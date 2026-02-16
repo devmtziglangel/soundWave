@@ -85,7 +85,7 @@ public class UsuarioPremium  extends Usuario {
         if(descargados.contains(contenido)) throw new ContenidoYaDescargadoException("Contenido  ya esta descargado");
         if(descargados.size()>=MAX_DESCARGAS_DEFAULT) throw new LimiteDescargasException("alcanzdo el limite");
 
-        contenido.descargar();
+
 
         descargados.add(contenido);
     }

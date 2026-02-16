@@ -2,8 +2,7 @@ package modelo.contenido;
 
 import excepciones.contenido.ContenidoNoDisponibleException;
 import excepciones.contenido.DuracionInvalidaException;
-import interfaces.Descargable;
-import interfaces.Reproducible;
+
 
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.Date;
 
 import java.util.UUID;
 
-public abstract  class Contenido   implements Descargable, Reproducible {
+public abstract  class Contenido   {
     //ATRIBUTOS
     protected String id;
     protected String titulo;

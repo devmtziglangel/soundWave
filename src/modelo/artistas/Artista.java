@@ -115,16 +115,10 @@ public class Artista {
         return top;
     }
 
-    public double calcularPromedioReproducciones() {
-        double total = 0;
-        for (Cancion c : discografia) {
-            total += c.getReproducciones(); // Asegúrate de usar getReproducciones()
-        }
+    public double calcularPromedioReproducciones(){
 
-        if (discografia.isEmpty()) {
-            return 0;
-        }
-        return total / discografia.size();
+        return (double) getTotalReproducciones() / discografia.size();
+
     }
 
     public boolean esVerificado() {

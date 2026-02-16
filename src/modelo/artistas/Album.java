@@ -10,55 +10,53 @@ import modelo.contenido.Cancion;
 import java.util.*;
 
 public class Album {
-    private String id;
-    private String titulo;
-    private Artista artista;
-    private Date fechalanzamiento;
-    private ArrayList<Cancion>canciones;
-    private String portadaURL;
-    private String discografica;
-    private String tipoAlbum;
 
-    private static final int MAX_CANCIONES = 20;
+    //ATRIBUTOS
 
-    //CONSTRUCTOR A
-    public Album(String titulo, Artista artista, Date fechalanzamiento) {
+    private String id;                      // ID único generado automáticamente
+    private String titulo;                   // Título del álbum
+    private Artista artista;                // Artista o banda que publica el álbum
+    private Date fechalanzamiento;          // Fecha de lanzamiento del álbum
+    private ArrayList<Cancion> canciones;   // Lista de canciones del álbum (máximo 20)
+    private String portadaURL;              // URL de la portada del álbum
+    private String discografica;            // Discográfica que publica el álbum
+    private String tipoAlbum;              // Tipo de álbum (ej. "Álbum de estudio", "EP", "Single")
 
-        //GENERAR ID
-        this.id = UUID.randomUUID().toString();
 
-        //ASIGNAR VALORES PARAMETIZADOS
+    private static final int MAX_CANCIONES = 20; // Constante para el límite de canciones por álbum
+
+    //CONSTRUCTOR solo con los datos básicos
+
+    public Album (String titulo, Artista artista, Date fechalanzamiento){
+        this.id = UUID.randomUUID().toString(); // Genera un ID único automáticamente
+
+        // Validación de parámetros
         this.titulo = titulo;
         this.artista = artista;
         this.fechalanzamiento = fechalanzamiento;
 
-       //ATRIBUTOS
-        this.canciones = new ArrayList<>(); //Iniciar array
-
+        // Inicialización de atributos no parametrizados
+        this.canciones = new ArrayList<>();
         this.portadaURL = null;
         this.discografica = null;
         this.tipoAlbum = null;
     }
 
-    //CONSTRUCTOR B
 
-    public Album(String titulo, Artista artista, Date fechalanzamiento, String discografica, String tipoAlbum) {
-        //USAR LOS PARAMETIZADOS DEL CONSTRUCTOR A
-        this( titulo, artista, fechalanzamiento);
+    //constructor con todos los atributo
 
-        //ASIGNAR VALORES PARAMETIZADOS
-        this.discografica = discografica;
+    public Album(String titulo, Artista artista, Date fechalanzamiento, String discografia, String tipoAlbum) {
+
+        //usar los atributos básicos parametizados del constructor anterior para evitar duplicación de código
+        this(titulo, artista, fechalanzamiento);
+
+        //valores parametizados adicionales
+        this.discografica = discografia;
         this.tipoAlbum = tipoAlbum;
-
-        //ATRIBUTO
-        // this.portadaURL=null;  No hace falta poner portadaURL = null otra vez, el A ya lo hizo
-
-
     }
 
 
-
-// GETTERS Y SETTERS
+// GETTERS Y SETTERS----------------------------------------------------------
 
     public String getId() {
         return id;
@@ -128,124 +126,194 @@ public class Album {
         this.tipoAlbum = tipoAlbum;
     }
 
-    //METODOS COMPOSICION AGREGACION
 
-    public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero)
-            throws AlbumCompletoException, DuracionInvalidaException { //EL THROW SE HACE EN LA CLASE CANCION
 
-        // 1. Verificamos si hay espacio
+
+    //------------METODOS COMPOSICION COMPOSICION / CREACION------------------
+
+
+
+    /**
+     * Crea y añade una nueva canción al álbum.
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración en segundos.
+     * @param genero Género musical.
+     * @param letra
+     * @param explicit
+     *
+
+     * @throws AlbumCompletoException Si el álbum ya alcanzó el máximo de canciones.
+     * @throws DuracionInvalidaException Si la duración es inválida.
+     */
+
+
+    public Cancion crearCancion (String titulo, int duracionSegundos, GeneroMusical genero, String letra, boolean explicit) throws AlbumCompletoException, DuracionInvalidaException {
+
         if (canciones.size() >= MAX_CANCIONES) {
-            throw new AlbumCompletoException("El álbum está completo. No caben más canciones.");
+            throw new AlbumCompletoException("El álbum '" + this.titulo + "' ya tiene el máximo de canciones (" + MAX_CANCIONES + "). No se pueden añadir más canciones.");
         }
 
-        // 2. Instanciamos la canción (COMPOSICIÓN)
-        // Pasamos 'this.artista' porque la canción pertenece al artista de este álbum.
-        // OJO AL ORDEN: Título -> Duracion -> Artista -> Genero
-        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero);
-
-        // 3. Establecemos la relación inversa (La canción debe saber que este es su álbum)
-        nuevaCancion.setAlbum(this); // --> YO SOY TU PADRE
-
-        // 4. La guardamos en la lista del album
-        canciones.add(nuevaCancion);
-
-        // 5. Devolvemos la canción creada
-        return nuevaCancion;
-    }
-
-    public Cancion crearCancion(String titulo, int duracionSegundos, GeneroMusical genero, String letra, boolean explicit)
-            throws AlbumCompletoException, DuracionInvalidaException {
-
-        // 1. Validar si cabe (Igual que el anterior)
-        if (canciones.size() >= MAX_CANCIONES) {
-            throw new AlbumCompletoException("El álbum está completo.");
+        if (duracionSegundos <= 0) {
+            throw new DuracionInvalidaException("Duración debe ser un número positivo.");
         }
 
-        // 2. Instanciar (COMPOSICIoN) usando el constructor COMPLETO
-        // OJO: pasamos 'this.artista' (el padre) + letra + explicit
-        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, this.artista, genero, letra, explicit);
 
-        // 3. Vincular (Igual que el anterior: "Yo soy tu álbum")
-        nuevaCancion.setAlbum(this);
+        // llamamos al constructor de la clase Cancion el completo
+        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, artista, genero, letra, explicit);
 
-        // 4. Guardar y devolver
+
+        nuevaCancion.setAlbum(this); // establecemos la relación de composición entre la canción y el álbum
         canciones.add(nuevaCancion);
         return nuevaCancion;
+
+    }
+
+    /**
+     * Crea y añade una nueva canción al álbum.
+     * @param titulo Título de la canción.
+     * @param duracionSegundos Duración en segundos.
+     * @param genero Género musical.
+     *
+
+     * @throws AlbumCompletoException Si el álbum ya alcanzó el máximo de canciones.
+     * @throws DuracionInvalidaException Si la duración es inválida.
+     */
+
+    public Cancion crearCancion (String titulo, int duracionSegundos, GeneroMusical genero) throws AlbumCompletoException, DuracionInvalidaException{
+
+        return crearCancion(titulo, duracionSegundos, genero, null, false);
+
+//
+//
+//        LO PODEMOS OBVIAS PORQUE EL CONSTRUCTOR DE LA CLASE CANCIÓN QUE VAMOS A LLAMAR, YA TIENE LAS VALIDACIONES DE DURACIÓN, Y EL LÍMITE DE CANCIONES LO TENEMOS QUE CONTROLAR EN ESTE MÉTODO PARA RESPETAR LA              COMPOSICIÓN Y NO PERMITIR CREAR MÁS DE 20 CANCIONES EN EL ÁLBUM
+//
+//        if(canciones.size()>=MAX_CANCIONES){
+//            throw  new AlbumCompletoException("El álbum '" + this.titulo + "' ya tiene el máximo de canciones (" + MAX_CANCIONES + "). No se pueden añadir más canciones.");
+//        }
+//
+//        if(duracionSegundos<=0){
+//            throw new DuracionInvalidaException("Duración debe ser un número positivo.");
+//        }
+//
+//
+//        // llamamos al constructor de la clase Cancion el basico
+//        Cancion nuevaCancion = new Cancion(titulo, duracionSegundos, artista, genero);
+//
+//
+//        nuevaCancion.setAlbum(this); // establecemos la relación de composición entre la canción y el álbum
+//        canciones.add(nuevaCancion);
+//        return nuevaCancion;
+
+
+
     }
 
 
 
+    //------------METODOS DE GESTION------------------
 
+    /**
+     * Elimina una canción del álbum por su posición.
+     * @param posicion Posición en la lista (1-based).
+     * @throws CancionNoEncontradaException Si la posición no es válida.
+     */
 
-    //METODOS GESTION
-
-    public void eliminarCancion(int posicion) throws CancionNoEncontradaException{
-
-        if(posicion<=0 || posicion>canciones.size()){
-            throw  new CancionNoEncontradaException("Cancion no encontrada");
+    public void eliminarCancion (int posicion) throws CancionNoEncontradaException{
+        if(posicion > canciones.size() || posicion<=0){
+            throw new CancionNoEncontradaException("Posición " + posicion + " no válida. El álbum '" + this.titulo + "' tiene " + canciones.size() + " canciones.");
         }
-        canciones.remove(posicion-1);
+
+        canciones.remove(posicion-1); // restamos 1 para convertir a índice 0-based
     }
 
-    public void eliminarCancion (Cancion cancion)throws CancionNoEncontradaException{
+    /**
+     * Obtiene una canción del álbum por su posición.
+     * @param posicion Posición en la lista (1-based).
+     * @return La canción en la posición especificada.
+     * @throws CancionNoEncontradaException Si la posición no es válida.
+     */
+
+    public Cancion getCancion(int posicion) throws CancionNoEncontradaException{
+        if(posicion>canciones.size() || posicion<=0){
+            throw new CancionNoEncontradaException("Posición " + posicion + " no válida. El álbum '" + this.titulo + "' tiene " + canciones.size() + " canciones.");
+        }
+
+        return canciones.get(posicion-1); // restamos 1 para convertir a índice 0-based
+    }
+
+    /**
+     * Elimina una canción específica del álbum.
+     * @param cancion Objeto Cancion a eliminar.
+     * @throws CancionNoEncontradaException Si la canción no está en el álbum.
+     */
+
+    public void elimminarCancion (Cancion cancion) throws CancionNoEncontradaException{
         if(!canciones.contains(cancion)){
-           throw new CancionNoEncontradaException("Cancion no encontrada");
+            throw new CancionNoEncontradaException("La canción '" + cancion.getTitulo() + "' no se encuentra en el álbum '" + this.titulo + "'.");
         }
+
         canciones.remove(cancion);
     }
 
+    /**
+     * Calcula la duración total del álbum sumando la duración de todas sus canciones.
+     * @return Duración total en segundos.
+     */
+
     public int getDuracionTotal(){
-        int total = 0;
-        for(Cancion c : canciones){
-           total+= c.getDuracion();
-
+        int duracionTotal = 0;
+        for (Cancion c: canciones) {
+            duracionTotal += c.getDuracionSegundos();
         }
-        return total;
-
+        return duracionTotal;
     }
 
-    public String getDuracionTotalFormateada(){
+    /**
+     * Devuelve la duración total formateada en horas:minutos:segundos.
+     * @return String con la duración formateada.
+     */
 
-        int totalDuracion = getDuracionTotal();
-        int min = totalDuracion/60;
-        int seg = totalDuracion%60;
 
+    public String getDuracionTotalFormateada() {
+        int duracionTotal = getDuracionTotal();
+        int horas = duracionTotal / 3600;
+        int minutos = (duracionTotal % 3600) / 60;
+        int segundos = duracionTotal % 60;
 
-        return String.format("%d:%02d", min, seg);
-
+        return String.format("%02d:%02d:%02d", horas, minutos, segundos);
     }
 
-    public int getNumCanciones(){
-
-
+    /**
+     * Obtiene el número de canciones del álbum.
+     * @return Cantidad de canciones.
+     */
+    public int getNumCanciones() {
         return canciones.size();
     }
 
-    public void ordenarPorPopularidad(){
+    /**
+     * Ordena las canciones del álbum por popularidad (reproducciones) de mayor a menor.
+     */
 
+    public void ordenarPorPopularidad(){
 
         Collections.sort(canciones, (c1, c2) -> c2.getReproducciones() - c1.getReproducciones());
 
     }
 
-    public Cancion getCancion(int posicion) throws CancionNoEncontradaException{
-        if(posicion<=0 || posicion>canciones.size()){
-            throw  new CancionNoEncontradaException("Cancion no encontrada");
-        }
-        return canciones.get(posicion-1);
-    }
-
+    /**
+     * Calcula el total de reproducciones acumuladas de todas las canciones del álbum.
+     * @return Total de reproducciones.
+     */
     public int getTotalReproducciones() {
-        int total = 0;
+        int reproduccionesTotalAlbum = 0;
 
-        for (Cancion c : canciones) {
-
-            total += c.getReproducciones();
+        for (Cancion cancion : canciones){
+            reproduccionesTotalAlbum += cancion.getReproducciones();
         }
 
-        return total;
+        return reproduccionesTotalAlbum;
     }
-
 
 
     //METODOS OVERRIDE
