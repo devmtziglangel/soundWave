@@ -185,6 +185,59 @@ public class Plataforma {
         return usuariosPorEmail.get(email.toLowerCase());
     }
 
+    /**
+     * Migra un usuario gratuito a una cuenta Premium.
+     * Transfiere todos sus datos (playlists, historial, likes) sin pérdida de información.
+     * @param usuarioGratuito El usuario gratuito a migrar
+     * @return El nuevo usuario premium con todos los datos transferidos
+     * @throws EmailInvalidoException Si el email no es válido
+     * @throws PasswordDebilException Si la contraseña no es fuerte
+     * @throws IllegalArgumentException Si el usuario no es de tipo UsuarioGratuito
+     */
+    public UsuarioPremium migrarUsuarioAPremium(UsuarioGratuito usuarioGratuito)
+            throws EmailInvalidoException, PasswordDebilException {
+
+        if (usuarioGratuito == null) {
+            throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+
+        // Crear el nuevo usuario premium con los mismos datos básicos
+        UsuarioPremium usuarioPremium = new UsuarioPremium(
+            usuarioGratuito.getNombre(),
+            usuarioGratuito.getEmail(),
+            usuarioGratuito.getPassword(),
+            TipoSuscripcion.PREMIUM
+        );
+
+        // Transferir datos personales
+        usuarioPremium.setId(usuarioGratuito.getId()); // Mantener el mismo ID
+        usuarioPremium.setFechaRegistro(usuarioGratuito.getFechaRegistro()); // Mantener fecha de registro
+
+        // Transferir historial
+        usuarioPremium.setHistorial(new ArrayList<>(usuarioGratuito.getHistorial()));
+
+        // Transferir playlists
+        usuarioPremium.setMisPlaylists(new ArrayList<>(usuarioGratuito.getMisPlaylists()));
+
+        // Transferir playlists seguidas
+        usuarioPremium.setPlaylistsSeguidas(new ArrayList<>(usuarioGratuito.getPlaylistsSeguidas()));
+
+        // Transferir contenidos likeados
+        usuarioPremium.setContenidosLiked(new ArrayList<>(usuarioGratuito.getContenidosLiked()));
+
+        // Ahora actualizar los HashMaps
+        // Primero eliminar el usuario gratuito
+        usuarios.remove(usuarioGratuito.getId());
+        usuariosPorEmail.remove(usuarioGratuito.getEmail().toLowerCase());
+
+        // Después agregar el nuevo usuario premium
+        usuarios.put(usuarioPremium.getId(), usuarioPremium);
+        usuariosPorEmail.put(usuarioPremium.getEmail().toLowerCase(), usuarioPremium);
+
+        return usuarioPremium;
+    }
+
+
     // ==================== GESTIÓN DE ARTISTAS ====================
 
     /**

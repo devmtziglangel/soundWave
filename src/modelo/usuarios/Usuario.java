@@ -17,16 +17,16 @@ import java.util.UUID;
 public abstract class Usuario {
 
 
-    private String id;
-    private String nombre;
-    private String email;
-    private String password;
-    private TipoSuscripcion suscripcion;
-    private ArrayList<Playlist> misPlaylists;
-    private ArrayList<Contenido> historial;
-    private Date fechaRegistro;
-    private ArrayList<Playlist> playlistsSeguidas;
-    private ArrayList<Contenido>contenidosLiked;
+    protected String id;
+    protected String nombre;
+    protected String email;
+    protected String password;
+    protected TipoSuscripcion suscripcion;
+    protected ArrayList<Playlist> misPlaylists;
+    protected ArrayList<Contenido> historial;
+    protected Date fechaRegistro;
+    protected ArrayList<Playlist> playlistsSeguidas;
+    protected ArrayList<Contenido>contenidosLiked;
 
 
      private static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";

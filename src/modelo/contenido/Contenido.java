@@ -2,7 +2,7 @@ package modelo.contenido;
 
 import excepciones.contenido.ContenidoNoDisponibleException;
 import excepciones.contenido.DuracionInvalidaException;
-
+import interfaces.Compartible;
 
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 import java.util.UUID;
 
-public abstract  class Contenido   {
+public abstract  class Contenido implements Compartible {
     //ATRIBUTOS
     protected String id;
     protected String titulo;
@@ -20,6 +20,11 @@ public abstract  class Contenido   {
     protected ArrayList<String> tags;
     protected boolean disponible;
     protected Date fechaPublicacion;
+
+
+
+
+    protected int vecesCompartido;
 
     //CONSTRUCTOR
 
@@ -35,6 +40,7 @@ public abstract  class Contenido   {
         this.tags = new ArrayList<>();
         this.disponible = true; //Iniciarlo en true o en false;
         this.fechaPublicacion = new Date();
+        this.vecesCompartido = 0;
 
     }
 
@@ -83,6 +89,27 @@ public abstract  class Contenido   {
 
     public void setFechaPublicacion(Date fechaPublicacion){
          this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public int getVecesCompartido() {
+        return vecesCompartido;
+    }
+
+    public void setVecesCompartido(int vecesCompartido) {
+        this.vecesCompartido = vecesCompartido;
+    }
+
+    //MÉTODOS DE LA INTERFAZ COMPARTIBLE
+
+    @Override
+    public String generarEnlaceCompartir() {
+        this.vecesCompartido++;
+        return "https://www.soundwave.com/share/" + this.id + this.titulo;
+    }
+
+    @Override
+    public int obtenerVecesCompartido() {
+        return this.vecesCompartido;
     }
 
     //METODO Abstracto
